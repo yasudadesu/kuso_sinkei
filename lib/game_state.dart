@@ -16,4 +16,15 @@ class GameState with ChangeNotifier {
     _cards.shuffle(); // this code doesnt work!?
     notifyListeners();
   }
+
+  GameCard getCard(int index) {
+    return _cards[index];
+  }
+
+  void reverseCard(int index) {
+    final prevFaceUp = _cards[index].isFaceUp;
+    _cards[index].isFaceUp = !prevFaceUp;
+
+    notifyListeners();
+  }
 }
