@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:muzui_sinkei/paint_card.dart';
 import 'package:provider/provider.dart';
 
 import 'game_state.dart';
@@ -48,23 +49,31 @@ class CardOnGame extends StatelessWidget {
   Widget build(BuildContext context) {
     // final card =
     //     context.select<GameState, GameCard>((value) => value.getCard(index));
-    final card = Provider.of<GameState>(context).getCard(index);
-    return Padding(
-        padding: const EdgeInsets.all(8),
-        child: GestureDetector(
-          onTap: () {
-            Provider.of<GameState>(context, listen: false).reverseCard(index);
-          },
-          child: Container(
-            height: 160,
-            width: 109.2,
-            color: card.isFaceUp ? Colors.black12 : Colors.transparent,
-            child: Center(
-              child: card.isFaceUp
-                  ? Text(card.cardId)
-                  : Image.asset('assets/toranpu.png'),
-            ),
-          ),
-        ));
+    return Consumer<GameState>(
+      builder: (context, gameState, child) {
+        final card = gameState.getCard(index);
+        final painterMap = gameState.painterMap;
+
+        return Padding(
+            padding: const EdgeInsets.all(8),
+            child: GestureDetector(
+              onTap: () {
+                gameState.reverseCard(index);
+              },
+              child: Container(
+                height: 160,
+                width: 109.2,
+                // color: card.isFaceUp ? Colors.black12 : Colors.transparent,
+                child: Center(
+                  child: card.isFaceUp
+                      ? Text(card.cardId.toString())
+                      // ? CustomPaint(
+                      //     painter: painterMap[card.cardId], child: Container())
+                      : Image.asset('assets/toranpu.png'),
+                ),
+              ),
+            ));
+      },
+    );
   }
 }
