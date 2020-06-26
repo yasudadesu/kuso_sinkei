@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 const modes = [
-  '簡単',
-  '難しい',
+  '初心者向け',
   '激ムズ',
+  '無理',
+  'クソゲー',
 ];
 
 class ModeSelectScreen extends StatelessWidget {
@@ -19,7 +20,8 @@ class ModeSelectScreen extends StatelessWidget {
           itemBuilder: (BuildContext context, int index) {
             return ListTile(
               title: Text(modes[index]),
-              onTap: () => Navigator.of(context).pushNamed('/game'),
+              onTap: () =>
+                  Navigator.of(context).pushNamed('/game', arguments: index),
             );
           },
         ),

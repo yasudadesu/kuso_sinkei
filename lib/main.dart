@@ -12,14 +12,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '間違い探し神経衰弱',
+      title: 'クソ神経衰弱',
       debugShowCheckedModeBanner: false,
       theme: defaultThemeData,
       initialRoute: '/',
-      routes: <String, WidgetBuilder>{
-        '/': (BuildContext context) => ModeSelectScreen(),
-        '/game': (BuildContext context) => GameScreen(),
-      },
+      onGenerateRoute: router,
     );
   }
 }
@@ -36,3 +33,25 @@ ThemeData defaultThemeData = ThemeData.light().copyWith(
     bottomSheetTheme: const BottomSheetThemeData(
       backgroundColor: Colors.transparent,
     ));
+
+final RouteFactory router = (settings) {
+  switch (settings.name) {
+    case '/':
+      return MaterialPageRoute(builder: (context) {
+        return ModeSelectScreen();
+      });
+      break;
+    case '/game':
+      final level = settings.arguments as int;
+      return MaterialPageRoute(builder: (context) {
+        return GameScreen(level: level);
+        // return const NewNovelScreen();
+      });
+      break;
+    default:
+      return MaterialPageRoute(builder: (context) {
+        return ModeSelectScreen();
+      });
+      break;
+  }
+};

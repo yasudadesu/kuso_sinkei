@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:muzui_sinkei/paint_card.dart';
 import 'package:provider/provider.dart';
 
-import 'game_state.dart';
+import 'game_data.dart';
+import 'mode_select.dart';
 
 class GameScreen extends StatelessWidget {
-  const GameScreen({Key key}) : super(key: key);
+  const GameScreen({Key key, this.level}) : super(key: key);
+  final int level;
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<GameState>(
-      create: (context) => GameState(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<GameData>(
+          create: (context) => GameData(level: level),
+        ),
+      ],
       child: Scaffold(
-        appBar: AppBar(title: Text('Game')),
+        appBar: AppBar(title: Text(modes[level])),
         body: SafeArea(
-          child: SinkeiGame(),
+          child: SinkeiGame(level: level),
         ),
       ),
     );
@@ -22,19 +27,30 @@ class GameScreen extends StatelessWidget {
 }
 
 class SinkeiGame extends StatelessWidget {
-  const SinkeiGame({Key key}) : super(key: key);
+  const SinkeiGame({Key key, this.level}) : super(key: key);
+  final int level;
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return Padding(
+      padding: const EdgeInsets.all(24),
       child: Column(
         children: [
-          for (var i = 0; i < 4; i++)
-            Row(
-              children: [
-                for (var j = 0; j < 5; j++) CardOnGame(index: i * 5 + j)
-              ],
-            )
+          GameStateDisplay(),
+          Expanded(
+            child: GridView.builder(
+                // shrinkWrap: true,
+                itemCount:
+                    context.select<GameData, int>((value) => value.numCard),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount:
+                      context.select<GameData, int>((value) => value.numRow),
+                  childAspectRatio: 273 / 400,
+                ),
+                itemBuilder: (context, index) {
+                  return CardOnGame(index: index);
+                }),
+          ),
         ],
       ),
     );
@@ -47,32 +63,54 @@ class CardOnGame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final card =
-    //     context.select<GameState, GameCard>((value) => value.getCard(index));
-    return Consumer<GameState>(
-      builder: (context, gameState, child) {
-        final card = gameState.getCard(index);
-        final painterMap = gameState.painterMap;
+    return Consumer<GameData>(
+      builder: (context, gameData, child) {
+        final card = gameData.getCard(index);
 
         return Padding(
             padding: const EdgeInsets.all(8),
             child: GestureDetector(
               onTap: () {
-                gameState.reverseCard(index);
+                gameData.reverseCard(index);
               },
-              child: Container(
+              child: SizedBox(
                 height: 160,
                 width: 109.2,
-                // color: card.isFaceUp ? Colors.black12 : Colors.transparent,
                 child: Center(
                   child: card.isFaceUp
-                      ? Text(card.cardId.toString())
-                      // ? CustomPaint(
-                      //     painter: painterMap[card.cardId], child: Container())
+                      ? CustomPaint(painter: card.paintCard, child: Container())
                       : Image.asset('assets/toranpu.png'),
                 ),
               ),
             ));
+      },
+    );
+  }
+}
+
+class GameStateDisplay extends StatelessWidget {
+  const GameStateDisplay({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<GameData>(
+      builder: (context, gameData, child) {
+        final turn = gameData.turn;
+        final score = gameData.score;
+        final clearText = gameData.clearText;
+
+        return Container(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Turn: $turn'),
+              const SizedBox(width: 60),
+              Text('Score: $score'),
+              Text(clearText),
+            ],
+          ),
+        );
       },
     );
   }
