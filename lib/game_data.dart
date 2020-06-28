@@ -66,6 +66,11 @@ class GameData with ChangeNotifier {
       return;
     }
 
+    if (_cards[index].isFaceUp) {
+      // プレイヤーが自ら裏返すことはできない
+      return;
+    }
+
     final prevFaceUp = _cards[index].isFaceUp;
     _cards[index].isFaceUp = !prevFaceUp;
     _opendIdxs.add(index);
@@ -135,15 +140,16 @@ class GameData with ChangeNotifier {
 
   void prepareCards() {
     for (var i = 0; i < _numCard; i++) {
+      final idx = i % (_numCard ~/ 2);
       _cards.add(GameCard(
-        cardId: i % _numCard ~/ 2,
+        cardId: idx,
         paintCard: PaintCard(
           randomList: _randomList,
           strokeCaps: _strokeCaps,
           paintingStyles: _paintingStyles,
           strokeWidths: _strokeWidths,
-          numFigure: _numFigures[i % _numCard ~/ 2],
-          startIndex: _startIndices[i % _numCard ~/ 2],
+          numFigure: _numFigures[idx],
+          startIndex: _startIndices[idx],
           colors: _colors,
         ),
       ));

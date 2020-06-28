@@ -104,9 +104,11 @@ class GameStateDisplay extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              const SizedBox(width: 60),
               Text('Turn: $turn'),
               const SizedBox(width: 60),
               Text('Score: $score'),
+              const SizedBox(width: 60),
               Text(clearText),
             ],
           ),
