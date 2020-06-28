@@ -1,16 +1,11 @@
 # muzui_sinkei
 
-A new Flutter project.
+This code is for Concentration Game written in flutter for web.
+You could play at https://muzu-sinkei.firebaseapp.com/#/
 
-## Getting Started
+## Warning
 
-This project is a starting point for a Flutter application.
+This code does not include files related to firebase.
+So, that's ok if you want to play in local.
+But you should prepare firebase settings if you want to out your code.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
